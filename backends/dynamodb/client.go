@@ -2,6 +2,7 @@ package dynamodb
 
 import (
 	"os"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -23,7 +24,10 @@ func NewDynamoDBClient(table string) (*Client, error) {
 	var c *aws.Config
 	if os.Getenv("DYNAMODB_LOCAL") != "" {
 		log.Debug("DYNAMODB_LOCAL is set")
-		endpoint := "http://localhost:8000"
+		endpoint := os.Getenv("DYNAMODB_LOCAL")
+		if !strings.HasPrefix(endpoint, "http://") {
+			endpoint = "http://localhost:8000"
+		}
 		c = &aws.Config{
 			Endpoint: &endpoint,
 		}
